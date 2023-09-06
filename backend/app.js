@@ -17,8 +17,11 @@ const mongoUrl = process.env.MONGODB_URL;
 //   console.log("Mongodb connected...");
 // });
 
+console.log(mongoUrl)
+
 mongoose
   .connect(mongoUrl)
+  
   .then(() => {
     console.log("Mongodb connected...");
   })
