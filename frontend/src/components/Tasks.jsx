@@ -9,13 +9,22 @@ const Tasks = () => {
 
   const authState = useSelector(state => state.authReducer);
   const [tasks, setTasks] = useState([]);
+  // const [users, setUsers] = useState([]);
   const [fetchData, { loading }] = useFetch();
 
   const fetchTasks = useCallback(() => {
     const config = { url: "/tasks", method: "get", headers: { Authorization: authState.token } };
     fetchData(config, { showSuccessToast: false }).then(data => setTasks(data.tasks));
+    console.log(tasks);
   }, [authState.token, fetchData]);
 
+  // const fetchUsers = useCallback(() => {
+  //   const config = { url: "/users", method: "get", headers: { Authorization: authState.token } };
+  //   fetchData(config, { showSuccessToast: false }).then(data => setTasks(data.users));
+  //   console.log(users)
+  // }, [authState.token, fetchData]);
+
+  
   useEffect(() => {
     if (!authState.isLoggedIn) return;
     fetchTasks();
