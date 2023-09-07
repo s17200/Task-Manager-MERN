@@ -33,11 +33,19 @@ exports.getTask = async (req, res) => {
 
 exports.postTask = async (req, res) => {
   try {
-    const { description } = req.body;
+    const { description, assignedTo, priority, deadline } = req.body;
     if (!description) {
-      return res.status(400).json({ status: false, msg: "Description of task not found" });
+      return res
+        .status(400)
+        .json({ status: false, msg: "Description of task not found" });
     }
-    const task = await Task.create({ user: req.user.id, description });
+    const task = await Task.create({
+      user: req.user.id,
+      description,
+      assignedTo,
+      priority,
+      deadline,
+    });
     res.status(200).json({ task, status: true, msg: "Task created successfully.." });
   }
   catch (err) {
