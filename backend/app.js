@@ -7,6 +7,7 @@ require("dotenv").config();
 const authRoutes = require("./routes/authRoutes");
 const taskRoutes = require("./routes/taskRoutes");
 const profileRoutes = require("./routes/profileRoutes");
+const userRoutes = require("./routes/userRoutes");
 
 app.use(express.json());
 app.use(cors());
@@ -17,8 +18,11 @@ const mongoUrl = process.env.MONGODB_URL;
 //   console.log("Mongodb connected...");
 // });
 
+console.log(mongoUrl)
+
 mongoose
   .connect(mongoUrl)
+  
   .then(() => {
     console.log("Mongodb connected...");
   })
@@ -30,6 +34,7 @@ mongoose
 app.use("/api/auth", authRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/profile", profileRoutes);
+app.use("/api/users", userRoutes);
 
 app.get("/", (req, res) => {
   res.send("hello");
