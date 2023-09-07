@@ -7,6 +7,8 @@ module.exports = {
       colors: {
         "primary": "#24ab8f",
         "primary-dark": "#268d77",
+        "saurabh-blue":"#3b82f6",
+        "high-red":"#ef4444",
       },
       animation: {
         "loader": "loader 1s linear infinite",
