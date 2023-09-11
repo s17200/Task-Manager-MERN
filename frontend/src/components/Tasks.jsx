@@ -50,12 +50,9 @@ const Tasks = () => {
 
   return (
     <>
-      <div className="my-2 mx-auto max-w-[1200px] py-4">
-        {tasks.length !== 0 && (
-          <h2 className="my-2 ml-2 md:ml-0 text-xl">
-            Your tasks ({tasks.length})
-          </h2>
-        )}
+      <div className="my-2 mx-auto max-w-[700px] py-4">
+
+        {tasks.length !== 0 && <h2 className='my-2 ml-2 md:ml-0 text-xl'>Your tasks ({tasks.length})</h2>}
         {loading ? (
           <Loader />
         ) : (
@@ -70,49 +67,28 @@ const Tasks = () => {
                   + Add new task{" "}
                 </Link>
               </div>
+
             ) : (
-              <div className="container mx-auto mt-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {tasks.map((task) => (
-                    <div
-                      key={task._id}
-                      className="bg-white shadow-md rounded-md p-4"
-                    >
-                      <h2 className="text-lg font-semibold">
-                        {task.description}
-                      </h2>
-                      <p className="text-gray-600">{task.deadline}</p>
-                      <div className="mt-4">
-                        <p className="text-sm text-gray-700">
-                          Assigned By: {task.assignedBy}
-                        </p>
-                        <p className="text-sm text-gray-700">
-                          Assigned To: {task.assignedTo}
-                        </p>
-                        <div
-                          className={`mt-2 bg-${getColorByPriority(
-                            task.priority
-                          )} text-white text-sm font-semibold py-1 px-2 rounded-full inline-block`}
-                        >
-                          Priority: {task.priority}
-                        </div>
-                      </div>
-                      <div className="mt-4">
-                        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 mr-2">
-                          View
-                        </button>
-                        <button
-                          onClick={() => handleDelete(task._id)}
-                          className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2"
-                        >
-                          Delete
-                        </button>
-                        <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 ml-2">
-                          Update
-                        </button>
-                      </div>
-                    </div>
-                  ))}
+              tasks.map((task, index) => (
+                <div key={task._id} className='bg-white my-4 p-4 text-gray-600 rounded-md shadow-md'>
+                  <div className='flex'>
+
+                    <span className='font-medium'>Task #{index + 1}</span>
+
+                    <Tooltip text={"Edit this task"} position={"top"}>
+                      <Link to={`/tasks/${task._id}`} className='ml-auto mr-2 text-green-600 cursor-pointer'>
+                        <i className="fa-solid fa-pen"></i>
+                      </Link>
+                    </Tooltip>
+
+                    <Tooltip text={"Delete this task"} position={"top"}>
+                      <span className='text-red-500 cursor-pointer' onClick={() => handleDelete(task._id)}>
+                        <i className="fa-solid fa-trash"></i>
+                      </span>
+                    </Tooltip>
+
+                  </div>
+                  <div className='whitespace-pre'>{task.description}</div>
                 </div>
               </div>
             )}
