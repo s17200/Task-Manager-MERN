@@ -7,15 +7,16 @@ import useFetch from '../hooks/useFetch';
 import MainLayout from '../layouts/MainLayout';
 import validateManyFields from '../validations';
 
-const Task = () => {
 
-  const authState = useSelector(state => state.authReducer);
+const Task = () => {
+  const authState = useSelector((state) => state.authReducer);
   const navigate = useNavigate();
   const [fetchData, { loading }] = useFetch();
   const { taskId } = useParams();
 
   const mode = taskId === undefined ? "add" : "update";
   const [task, setTask] = useState(null);
+  const [assignTo, setassignTo] = useState([]);
   const [formData, setFormData] = useState({
     description: "",
     assignedTo: "",
@@ -27,6 +28,17 @@ const Task = () => {
   useEffect(() => {
     document.title = mode === "add" ? "Add task" : "Update Task";
   }, [mode]);
+
+  useEffect(() => {
+    const config = {
+      url: `/users`,
+      method: "get",
+      headers: { Authorization: authState.token },
+    };
+    fetchData(config, { showSuccessToast: false }).then((data) => {
+      setassignTo(data?.users);
+    });
+  }, []);
 
   useEffect(() => {
     if (mode === "update") {
@@ -130,9 +142,11 @@ const Task = () => {
                     onChange={handleChange}
                     name="assignedTo"
                   >
-                    <option value="saurabh">Saurabh</option>
-                    <option value="aseem">Aseem</option>
-                    <option value="namrata">namrata</option>
+                    {assignTo.map((item) => (
+                      <option key={item._id} value={item?.name}>
+                        {item?.name}
+                      </option>
+                    ))}
                   </select>
                 </div>
                 <div className="flex flex-col gap-2 mt-4">
@@ -142,9 +156,10 @@ const Task = () => {
                     onChange={handleChange}
                     name="priority"
                   >
-                    <option value="low">Low</option>
-                    <option value="medium">Medium</option>
-                    <option value="high">High</option>
+                    <option value="Low">Low</option>
+                    <option value="Medium">Medium</option>
+                    <option value="High">High</option>
+                  
                   </select>
                 </div>
                 <div className="flex flex-col gap-2 mt-4">
@@ -185,6 +200,6 @@ const Task = () => {
       </MainLayout>
     </>
   );
-}
+};
 
 export default Task
