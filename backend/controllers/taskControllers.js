@@ -80,8 +80,10 @@ exports.putTask = async (req, res) => {
       return res.status(400).json({ status: false, msg: "Task with given id not found" });
     }
 
-    if (task.user != req.user.id) {
-      return res.status(403).json({ status: false, msg: "You can't update task of another user" });
+    if (task.assignedBy != req.user.id) {
+      return res
+        .status(403)
+        .json({ status: false, msg: "You can't update task of another user" });
     }
 
     task = await Task.findByIdAndUpdate(req.params.taskId, { description }, { new: true });
