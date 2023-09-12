@@ -17,9 +17,19 @@ const SignupForm = () => {
   const navigate = useNavigate();
 
   const handleChange = e => {
-    setFormData({
-      ...formData, [e.target.name]: e.target.value
-    });
+    const { name, value } = e.target;
+    if (name === "name") {
+      const capitalizedValue = value.charAt(0).toUpperCase() + value.slice(1);
+      setFormData({
+        ...formData,
+        [name]: capitalizedValue,
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
   }
 
   const handleSubmit = e => {

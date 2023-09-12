@@ -105,7 +105,7 @@ exports.deleteTask = async (req, res) => {
       return res.status(400).json({ status: false, msg: "Task with given id not found" });
     }
 
-    if (task.user != req.user.id) {
+    if (task.assignedBy != req.user.id) {
       return res.status(403).json({ status: false, msg: "You can't delete task of another user" });
     }
 

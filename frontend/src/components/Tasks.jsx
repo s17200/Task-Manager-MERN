@@ -9,7 +9,8 @@ const Tasks = () => {
   const authState = useSelector((state) => state.authReducer);
   const [tasks, setTasks] = useState([]);
   const [fetchData, { loading }] = useFetch();
-  const [usersData, setUsersData] = useState({}); // Store user data
+  const [assignedBy, setAssignedBy] = useState({});
+  const [assignedTo, setAssignedTo] = useState({});
 
   const fetchTasks = useCallback(() => {
     const config = {
@@ -20,31 +21,8 @@ const Tasks = () => {
     // const {userTasks, allTasks}=config
     fetchData(config, { showSuccessToast: false }).then((data) => {
       setTasks(data);
-
     });
   }, [authState.token, fetchData]);
-
-  // async function fetchUserData(userId) {
-  //   const config = {
-  //     url: "/tasks",
-  //     method: "get",
-  //     headers: { Authorization: authState.token },
-  //   };
-  //   try {
-  //     const response = await fetch(`http://localhost:5000/api/users/${userId}`);
-  //     const userData = await response.json();
-  //     console.log(userData);
-  //   } catch (error) {
-  //     console.error("Error fetching user data:", error);
-  //     return null;
-  //   }
-  // }
-
-  // const fetchUsers = useCallback(() => {
-  //   const config = { url: "/users", method: "get", headers: { Authorization: authState.token } };
-  //   fetchData(config, { showSuccessToast: false }).then(data => setTasks(data.users));
-  //   console.log(users)
-  // }, [authState.token, fetchData]);
 
   useEffect(() => {
     if (!authState.isLoggedIn) return;
@@ -60,21 +38,59 @@ const Tasks = () => {
     fetchData(config).then(() => fetchTasks());
   };
 
-  const getUsersData = async (id) => {
-    console.log(id);
-    // const config = {
-    //   url: `/users/${id}`,
-    //   method: "get",
-    //   headers: { Authorization: authState.token },
-    // };
-    // try {
-    //   const data = await fetchData(config, { showSuccessToast: false });
-    //   // return data.user.name;
-    //   console.log(data.user.name)
-    // } catch (error) {
-    //   console.log(error);
-    // }
-  };
+  useEffect(() => {
+    // Function to fetch user data for a given user ID
+    const getUsersData = async (id) => {
+      const config = {
+        url: `/users/${id}`,
+        method: "get",
+        headers: { Authorization: authState.token },
+      };
+      try {
+        const data = await fetchData(config, { showSuccessToast: false });
+        return data.user.name;
+      } catch (error) {
+        console.log(error);
+        return null;
+      }
+    };
+
+    // Fetch user data for assigned users
+    const fetchUserDataForAssignedUsers = async () => {
+      const newAssignedBy = {};
+      const newAssignedTo = {}; // Create a new map to store user data
+
+      // Iterate through tasks to collect unique user IDs
+      const uniqueAssignedByIds = Array.from(
+        new Set(tasks.map((task) => task.assignedBy._id))
+      );
+      const uniqueAssignedToIds = Array.from(
+        new Set(tasks.map((task) => task.assignedTo._id))
+      );
+
+      // Fetch user data for each unique user ID
+      for (const userId of uniqueAssignedByIds) {
+        const userName = await getUsersData(userId);
+        if (userName !== null) {
+          newAssignedBy[userId] = userName;
+        }
+      }
+
+      for (const userId of uniqueAssignedToIds) {
+        const userName = await getUsersData(userId);
+        if (userName !== null) {
+          newAssignedTo[userId] = userName;
+        }
+      }
+
+      // Update the userDataMap state with the fetched user data
+      setAssignedBy(newAssignedBy);
+      setAssignedTo(newAssignedTo);
+    };
+
+    // Call the function to fetch user data when tasks or authState.token changes
+    fetchUserDataForAssignedUsers();
+  }, [tasks, authState.token]);
 
   const handleDateFormate = (date) => {
     const inputDate = new Date(date);
@@ -151,14 +167,14 @@ const Tasks = () => {
                     <div className="mx-10">
                       <span className="font-medium  ">Assigned By</span>
                       <h3 className="text-center">
-                        {task.assignedBy._id}
+                        {assignedBy[task?.assignedBy._id] || "Loading..."}
                       </h3>
                     </div>
 
                     <div>
                       <span className="font-medium">Assigned To</span>
                       <h3 className="text-center">
-                        {task?.assignedTo._id}
+                        {assignedTo[task?.assignedTo._id] || "Loading..."}
                       </h3>
                     </div>
 
