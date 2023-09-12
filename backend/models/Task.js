@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const taskSchema = new mongoose.Schema(
   {
-    user: {
+    assignedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
@@ -11,8 +11,10 @@ const taskSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+   
     assignedTo: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
     priority: {
       type: String,

@@ -141,12 +141,13 @@ const Task = () => {
                 <div className="flex flex-col gap-2 mt-4">
                   <label htmlFor="Assignedto">AssignedTo</label>
                   <select
-                    className="py-3 outline-2 border-2"
+                    className="py-3 outline-2 border-2" 
                     onChange={handleChange}
                     name="assignedTo"
                   >
+                    <option value="">Select Name</option>
                     {assignTo.map((item) => (
-                      <option key={item._id} value={item?.name}>
+                      <option key={item._id} value={item?._id}>
                         {item?.name}
                       </option>
                     ))}
