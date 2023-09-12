@@ -4,7 +4,8 @@ const { validateObjectId } = require("../utils/validation");
 
 exports.getTasks = async (req, res) => {
   try {
-    const tasks = await Task.find({ user: req.user.id });
+    const tasks = await Task.find({assignedBy: req.user.id }); 
+    // const allTasks= await Task.find();  
     res.status(200).json({ tasks, status: true, msg: "Tasks found successfully.." });
   }
   catch (err) {

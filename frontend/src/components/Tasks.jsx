@@ -16,8 +16,9 @@ const Tasks = () => {
     const config = {
       url: "/tasks",
       method: "get",
-      headers: { Authorization: authState.token },
+      headers: { Authorization: authState.token},
     };
+    // const {userTasks, allTasks}=config
     fetchData(config, { showSuccessToast: false }).then((data) => {
       setTasks(data.tasks);
       // Promise.all(
@@ -63,7 +64,7 @@ const Tasks = () => {
     const config = {
       url: `/tasks/${id}`,
       method: "delete",
-      headers: { Authorization: authState.token },
+      headers: { Authorization: authState.token},
     };
     fetchData(config).then(() => fetchTasks());
   };
