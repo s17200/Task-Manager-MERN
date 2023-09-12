@@ -3,15 +3,16 @@ const { validateObjectId } = require("../utils/validation");
 
 
 exports.getTasks = async (req, res) => {
-  try {
-    const tasks = await Task.find({ user: req.user.id });
-    res.status(200).json({ tasks, status: true, msg: "Tasks found successfully.." });
-  }
-  catch (err) {
-    console.error(err);
-    return res.status(500).json({ status: false, msg: "Internal Server Error" });
-  }
-}
+  Task.find({
+    $or: [{ assignedBy: req.user._id }, { assignedTo: req.user._id }],
+  })
+    .populate("assignedBy", "username")
+    .populate("assignedTo", "username")
+    .exec((err, tasks) => {
+      if (err) return res.status(500).send("Error fetching tasks");
+      res.status(200).json(tasks);
+    });
+};
 
 exports.getTask = async (req, res) => {
   try {
@@ -19,17 +20,23 @@ exports.getTask = async (req, res) => {
       return res.status(400).json({ status: false, msg: "Task id not valid" });
     }
 
-    const task = await Task.findOne({ user: req.user.id, _id: req.params.taskId });
+    const task = await Task.findOne({
+      user: req.user.id,
+      _id: req.params.taskId,
+    });
     if (!task) {
       return res.status(400).json({ status: false, msg: "No task found.." });
     }
-    res.status(200).json({ task, status: true, msg: "Task found successfully.." });
-  }
-  catch (err) {
+    res
+      .status(200)
+      .json({ task, status: true, msg: "Task found successfully.." });
+  } catch (err) {
     console.error(err);
-    return res.status(500).json({ status: false, msg: "Internal Server Error" });
+    return res
+      .status(500)
+      .json({ status: false, msg: "Internal Server Error" });
   }
-}
+};
 
 exports.postTask = async (req, res) => {
   try {
@@ -40,19 +47,22 @@ exports.postTask = async (req, res) => {
         .json({ status: false, msg: "Description of task not found" });
     }
     const task = await Task.create({
-      user: req.user.id,
-      description,
+      assignedBy: req.user.id,
+      description,  
       assignedTo,
       priority,
       deadline,
     });
-    res.status(200).json({ task, status: true, msg: "Task created successfully.." });
-  }
-  catch (err) {
+    res
+      .status(200)
+      .json({ task, status: true, msg: "Task created successfully.." });
+  } catch (err) {
     console.error(err);
-    return res.status(500).json({ status: false, msg: "Internal Server Error" });
+    return res
+      .status(500)
+      .json({ status: false, msg: "Internal Server Error" });
   }
-}
+};
 
 exports.putTask = async (req, res) => {
   try {
