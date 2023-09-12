@@ -21,15 +21,6 @@ const Tasks = () => {
     fetchData(config, { showSuccessToast: false }).then((data) => {
       setTasks(data);
 
-      // Promise.all(
-      //   data.tasks.map(async (task) => {
-      //     // Extract the userId from the task
-      //     const userId = task.user;
-
-      //     // Fetch additional data based on userId
-      //     const userData = await fetchUserData(userId);
-      //   })
-      // );
     });
   }, [authState.token, fetchData]);
 
@@ -69,7 +60,7 @@ const Tasks = () => {
     fetchData(config).then(() => fetchTasks());
   };
 
-  const getUsersData =  (id) => {
+  const getUsersData = async (id) => {
     console.log(id);
     // const config = {
     //   url: `/users/${id}`,
@@ -160,14 +151,14 @@ const Tasks = () => {
                     <div className="mx-10">
                       <span className="font-medium  ">Assigned By</span>
                       <h3 className="text-center">
-                        {getUsersData(task?.assignedBy._id)}
+                        {task.assignedBy._id}
                       </h3>
                     </div>
 
                     <div>
                       <span className="font-medium">Assigned To</span>
                       <h3 className="text-center">
-                        {getUsersData(task?.assignedTo._id)}
+                        {task?.assignedTo._id}
                       </h3>
                     </div>
 
