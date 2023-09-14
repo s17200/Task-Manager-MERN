@@ -6,16 +6,18 @@ import Loader from './utils/Loader';
 import Tooltip from './utils/Tooltip';
 import NoofTasks from "./NoofTasks";
 
-const Tasks = () => {
+const Tasks = (Filter) => {
   const authState = useSelector((state) => state.authReducer);
   const [tasks, setTasks] = useState([]);
   const [fetchData, { loading }] = useFetch();
   const [assignedBy, setAssignedBy] = useState({});
   const [assignedTo, setAssignedTo] = useState({});
 
+  console.log(Filter)
+
   const fetchTasks = useCallback(() => {
     const config = {
-      url: "/tasks",
+      url: `/tasks`,
       method: "get",
       headers: { Authorization: authState.token},
     };

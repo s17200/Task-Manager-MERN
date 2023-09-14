@@ -15,7 +15,7 @@ exports.getTasks = async (req, res) => {
   Task.find({
     $and: [
       {
-        $or: [{ assignedBy: req.user._id }, { assignedTo: req.user._id }],
+    $or: [{ assignedBy: req.user._id }, { assignedTo: req.user._id }],
       },
       query,
     ],
