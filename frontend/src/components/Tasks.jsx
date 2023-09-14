@@ -7,36 +7,36 @@ import Tooltip from './utils/Tooltip';
 import NoofTasks from "./NoofTasks";
 
 const Tasks = (Filter) => {
+  const filter = Filter.filter;
+  console.log(filter);
   const authState = useSelector((state) => state.authReducer);
   const [tasks, setTasks] = useState([]);
   const [fetchData, { loading }] = useFetch();
   const [assignedBy, setAssignedBy] = useState({});
   const [assignedTo, setAssignedTo] = useState({});
 
-  console.log(Filter)
-
   const fetchTasks = useCallback(() => {
     const config = {
-      url: `/tasks?priority=${Filter}`,
+      url: `/tasks?priority=${filter}`,
       method: "get",
-      headers: { Authorization: authState.token},
+      headers: { Authorization: authState.token },
     };
     // const {userTasks, allTasks}=config
     fetchData(config, { showSuccessToast: false }).then((data) => {
       setTasks(data);
     });
-  }, [authState.token, fetchData]);
+  }, [authState.token, fetchData, filter]);
 
   useEffect(() => {
     if (!authState.isLoggedIn) return;
     fetchTasks();
-  }, [authState.isLoggedIn, fetchTasks]);
+  }, [authState.isLoggedIn, fetchTasks, Filter]);
 
   const handleDelete = (id) => {
     const config = {
       url: `/tasks/${id}`,
       method: "delete",
-      headers: { Authorization: authState.token},
+      headers: { Authorization: authState.token },
     };
     fetchData(config).then(() => fetchTasks());
   };
