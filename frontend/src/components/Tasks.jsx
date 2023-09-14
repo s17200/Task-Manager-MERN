@@ -17,7 +17,7 @@ const Tasks = (Filter) => {
 
   const fetchTasks = useCallback(() => {
     const config = {
-      url: `/tasks`,
+      url: `/tasks?priority=${Filter}`,
       method: "get",
       headers: { Authorization: authState.token},
     };
