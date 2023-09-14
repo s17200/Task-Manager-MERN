@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import useFetch from '../hooks/useFetch';
 import Loader from './utils/Loader';
 import Tooltip from './utils/Tooltip';
+import NoofTasks from "./NoofTasks";
 
 const Tasks = () => {
   const authState = useSelector((state) => state.authReducer);
@@ -136,11 +137,7 @@ const Tasks = () => {
   return (
     <>
       <div className="my-2 mx-auto max-w-[900px] py-4 ">
-        {tasks?.length !== 0 && (
-          <h2 className="text-white my-2 ml-2 md:ml-0 text-xl">
-            Your tasks ({tasks?.length})
-          </h2>
-        )}
+        <NoofTasks tasks={tasks} />
         {loading ? (
           <Loader />
         ) : (
@@ -232,6 +229,6 @@ const Tasks = () => {
       </div>
     </>
   );
-}
+};
 
 export default Tasks

@@ -21,7 +21,7 @@ exports.getTask = async (req, res) => {
     }
 
     const task = await Task.findOne({
-      user: req.user.id,
+      assignedBy: req.user.id,
       _id: req.params.taskId,
     });
     if (!task) {
