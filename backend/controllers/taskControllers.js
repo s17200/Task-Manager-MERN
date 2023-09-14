@@ -3,8 +3,22 @@ const { validateObjectId } = require("../utils/validation");
 
 
 exports.getTasks = async (req, res) => {
+  const { priority, assignedBy } = req.query;
+  let query = {};
+  if (priority) {
+    query.priority = priority;
+  }
+
+  if (assignedBy) {
+    query.assignedBy = assignedBy;
+  }
   Task.find({
-    $or: [{ assignedBy: req.user._id }, { assignedTo: req.user._id }],
+    $and: [
+      {
+        $or: [{ assignedBy: req.user._id }, { assignedTo: req.user._id }],
+      },
+      query,
+    ],
   })
     .populate("assignedBy", "username")
     .populate("assignedTo", "username")
