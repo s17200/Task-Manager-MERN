@@ -3,9 +3,9 @@ const { validateObjectId } = require("../utils/validation");
 
 
 exports.getTasks = async (req, res) => {
-  const { priority, assignedBy } = req.query;
+  const { priority = "default", assignedBy } = req.query;
   let query = {};
-  if (priority) {
+  if (priority !== "default") {
     query.priority = priority;
   }
 
@@ -17,7 +17,7 @@ exports.getTasks = async (req, res) => {
       {
     $or: [{ assignedBy: req.user._id }, { assignedTo: req.user._id }],
       },
-      query,
+      query, // Include the query object as an additional condition
     ],
   })
     .populate("assignedBy", "username")
