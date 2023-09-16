@@ -29,7 +29,7 @@ const Home = () => {
         ) : (
           <>
             <h1 className='text-lg text-white mt-8 mx-8 border-b border-b-gray-300'>Welcome {authState.user.name}</h1>
-            <select className=' mt-8 mx-8 rounded-md p-2' name="Filter" id="filter" onChange={(e)=>setFilter(e.target.value)}>
+            <select className=' cursor-pointer mt-8 mx-8 rounded-md p-2' name="Filter" id="filter" onChange={(e)=>setFilter(e.target.value)}>
               <option className='p-1' value="default">Default</option>
               <option className='p-1' value="High">High</option>
               <option className='p-1' value="Low">Low</option>

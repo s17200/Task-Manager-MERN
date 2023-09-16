@@ -116,11 +116,11 @@ const Task = () => {
       {formErrors[field]}
     </p>
   );
-
+  // max-w-[1000px]
   return (
-    <>
+    <>                      
       <MainLayout>
-        <form className="m-auto my-16 max-w-[1000px] bg-white p-8 border-2 shadow-md rounded-md">
+        <form className="m-auto my-400 w-16 md:w-800 lg:w-[1000px] bg-white p-8 border-2 shadow-md rounded-md">
           {loading ? (
             <Loader />
           ) : (
@@ -160,6 +160,7 @@ const Task = () => {
                     onChange={handleChange}
                     name="priority"
                   >
+                    <option >Select Priority</option>
                     <option value="Low">Low</option>
                     <option value="Medium">Medium</option>
                     <option value="High">High</option>
