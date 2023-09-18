@@ -7,19 +7,16 @@ import Tooltip from './utils/Tooltip';
 import NoofTasks from "./NoofTasks";
 import IndiVidualTask from "./IndiVidualTask";
 
-const Tasks = ({ tasks, error }) => {
-  // const filter = Filter.filter;
-  console.log(tasks);
-
+const Tasks = ({ Filter }) => {
   const authState = useSelector((state) => state.auth);
-  // const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState([]);
   const [fetchData, { loading }] = useFetch();
   const [assignedBy, setAssignedBy] = useState({});
   const [assignedTo, setAssignedTo] = useState({});
 
   const fetchTasks = useCallback(() => {
     const config = {
-      url: `/tasks?priority=${filter}`,
+      url: `/tasks?priority=${Filter}`,
       method: "get",
       headers: { Authorization: authState.token },
     };
@@ -27,7 +24,7 @@ const Tasks = ({ tasks, error }) => {
     fetchData(config, { showSuccessToast: false }).then((data) => {
       setTasks(data);
     });
-  }, [authState.token, fetchData, filter]);
+  }, [authState.token, fetchData, Filter]);
 
   useEffect(() => {
     if (!authState.isLoggedIn) return;

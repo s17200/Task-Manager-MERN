@@ -8,7 +8,7 @@ import { getTasks } from "../redux/Tasks/task.actions";
 
 const Home = () => {
   const authState = useSelector((state) => state.auth);
-  const taskState = useSelector((state) => state?.task);
+
 
   const { isLoggedIn } = authState;
   const [Filter, setFilter] = useState("default");
@@ -30,6 +30,7 @@ const Home = () => {
       : "Task Manager";
     fetchTasks();
   }, [authState, fetchTasks]);
+ 
 
   return (
     <>
@@ -74,7 +75,7 @@ const Home = () => {
               </option>
             </select>
 
-            <Tasks {...taskState} />
+            <Tasks Filter={Filter} />
           </>
         )}
       </MainLayout>
