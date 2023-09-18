@@ -6,11 +6,12 @@ import Loader from './utils/Loader';
 import Tooltip from './utils/Tooltip';
 import NoofTasks from "./NoofTasks";
 
-const Tasks = (Filter) => {
-  const filter = Filter.filter;
-  console.log(filter);
-  const authState = useSelector((state) => state.authReducer);
-  const [tasks, setTasks] = useState([]);
+const Tasks = ({ tasks, error }) => {
+  // const filter = Filter.filter;
+  console.log(tasks);
+
+  const authState = useSelector((state) => state.auth);
+  // const [tasks, setTasks] = useState([]);
   const [fetchData, { loading }] = useFetch();
   const [assignedBy, setAssignedBy] = useState({});
   const [assignedTo, setAssignedTo] = useState({});

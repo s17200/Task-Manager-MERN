@@ -9,7 +9,7 @@ import validateManyFields from '../validations';
 
 const Task = () => {
 
-  const authState = useSelector(state => state.authReducer);
+  const authState = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const [fetchData, { loading }] = useFetch();
   const { taskId } = useParams();
