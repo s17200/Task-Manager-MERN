@@ -7,6 +7,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import { saveProfile } from "./redux/Auth/auth.actions";
 import NotFound from "./pages/NotFound";
+import CompletedTasks from "./pages/CompletedTasks";
 
 function App() {
   const authState = useSelector((state) => state.auth);
@@ -34,6 +35,16 @@ function App() {
             element={
               authState.isLoggedIn ? (
                 <Task />
+              ) : (
+                <Navigate to="/login" state={{ redirectUrl: "/tasks/add" }} />
+              )
+            }
+          />
+          <Route
+            path="/tasks/:id"
+            element={
+              authState.isLoggedIn ? (
+                <CompletedTasks />
               ) : (
                 <Navigate to="/login" state={{ redirectUrl: "/tasks/add" }} />
               )

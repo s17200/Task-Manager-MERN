@@ -45,6 +45,17 @@ function IndiVidualTask({ task, index, assignedBy, assignedTo, deleteTask }) {
   const handleDelete = (id) => {
     deleteTask(id);
   };
+
+  const handleCompleted = (id) => {
+    // const config = {
+    //   url: `/tasks?priority=${Filter}`,
+    //   method: "get",
+    //   headers: { Authorization: authState.token },
+    // };
+    // fetchData(config, { showSuccessToast: false }).then((data) => {
+    //   setTasks(data);
+    // });
+  };
   return (
     <div
       key={task._id}
@@ -105,6 +116,15 @@ function IndiVidualTask({ task, index, assignedBy, assignedTo, deleteTask }) {
             onClick={() => handleDelete(task?._id)}
           >
             <i className="fa-solid fa-trash"></i>
+          </span>
+        </Tooltip>
+
+        <Tooltip text={"Mark as Completed"} position={"top"}>
+          <span
+            className="text-blue-500 cursor-pointer ml-2"
+            onClick={() => handleCompleted(task?._id)}
+          >
+            <i className="fa-regular fa-check-circle"></i>
           </span>
         </Tooltip>
       </div>

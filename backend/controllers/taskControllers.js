@@ -1,10 +1,17 @@
+const CompletedTask = require("../models/CompletedTask");
 const Task = require("../models/Task");
 const { validateObjectId } = require("../utils/validation");
 
-
 exports.getTasks = async (req, res) => {
   const { priority = "default", assignedBy } = req.query;
-  let query = {};
+  let query = {
+    // Exclude tasks that are in the completed task list of the logged-in user.
+    _id: {
+      $nin: await CompletedTask.find({ userId: req.user._id }).distinct(
+        "taskId"
+      ),
+    },
+  };
   if (priority !== "default") {
     query.priority = priority;
   }
@@ -15,7 +22,7 @@ exports.getTasks = async (req, res) => {
   Task.find({
     $and: [
       {
-    $or: [{ assignedBy: req.user._id }, { assignedTo: req.user._id }],
+        $or: [{ assignedBy: req.user._id }, { assignedTo: req.user._id }],
       },
       query, // Include the query object as an additional condition
     ],
@@ -62,7 +69,7 @@ exports.postTask = async (req, res) => {
     }
     const task = await Task.create({
       assignedBy: req.user.id,
-      description,  
+      description,
       assignedTo,
       priority,
       deadline,
@@ -82,7 +89,9 @@ exports.putTask = async (req, res) => {
   try {
     const { description } = req.body;
     if (!description) {
-      return res.status(400).json({ status: false, msg: "Description of task not found" });
+      return res
+        .status(400)
+        .json({ status: false, msg: "Description of task not found" });
     }
 
     if (!validateObjectId(req.params.taskId)) {
@@ -91,7 +100,9 @@ exports.putTask = async (req, res) => {
 
     let task = await Task.findById(req.params.taskId);
     if (!task) {
-      return res.status(400).json({ status: false, msg: "Task with given id not found" });
+      return res
+        .status(400)
+        .json({ status: false, msg: "Task with given id not found" });
     }
 
     if (task.assignedBy != req.user.id) {
@@ -100,15 +111,21 @@ exports.putTask = async (req, res) => {
         .json({ status: false, msg: "You can't update task of another user" });
     }
 
-    task = await Task.findByIdAndUpdate(req.params.taskId, { description }, { new: true });
-    res.status(200).json({ task, status: true, msg: "Task updated successfully.." });
-  }
-  catch (err) {
+    task = await Task.findByIdAndUpdate(
+      req.params.taskId,
+      { description },
+      { new: true }
+    );
+    res
+      .status(200)
+      .json({ task, status: true, msg: "Task updated successfully.." });
+  } catch (err) {
     console.error(err);
-    return res.status(500).json({ status: false, msg: "Internal Server Error" });
+    return res
+      .status(500)
+      .json({ status: false, msg: "Internal Server Error" });
   }
-}
-
+};
 
 exports.deleteTask = async (req, res) => {
   try {
@@ -118,18 +135,23 @@ exports.deleteTask = async (req, res) => {
 
     let task = await Task.findById(req.params.taskId);
     if (!task) {
-      return res.status(400).json({ status: false, msg: "Task with given id not found" });
+      return res
+        .status(400)
+        .json({ status: false, msg: "Task with given id not found" });
     }
 
     if (task.assignedBy != req.user.id) {
-      return res.status(403).json({ status: false, msg: "You can't delete task of another user" });
+      return res
+        .status(403)
+        .json({ status: false, msg: "You can't delete task of another user" });
     }
 
     await Task.findByIdAndDelete(req.params.taskId);
     res.status(200).json({ status: true, msg: "Task deleted successfully.." });
-  }
-  catch (err) {
+  } catch (err) {
     console.error(err);
-    return res.status(500).json({ status: false, msg: "Internal Server Error" });
+    return res
+      .status(500)
+      .json({ status: false, msg: "Internal Server Error" });
   }
-}
+};

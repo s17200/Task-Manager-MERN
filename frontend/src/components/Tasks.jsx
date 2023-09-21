@@ -6,6 +6,7 @@ import Loader from './utils/Loader';
 import Tooltip from './utils/Tooltip';
 import NoofTasks from "./NoofTasks";
 import IndiVidualTask from "./IndiVidualTask";
+import EmptyTask from "./EmptyTask";
 
 const Tasks = ({ Filter }) => {
   const authState = useSelector((state) => state.auth);
@@ -20,7 +21,7 @@ const Tasks = ({ Filter }) => {
       method: "get",
       headers: { Authorization: authState.token },
     };
-    // const {userTasks, allTasks}=config
+
     fetchData(config, { showSuccessToast: false }).then((data) => {
       setTasks(data);
     });
@@ -104,13 +105,7 @@ const Tasks = ({ Filter }) => {
           <div>
             {tasks?.length === 0 ? (
               <div className="w-[600px] h-[300px] flex items-center justify-center gap-4">
-                <span>No tasks found</span>
-                <Link
-                  to="/tasks/add"
-                  className="bg-blue-500 text-white hover:bg-blue-600 font-medium rounded-md px-4 py-2"
-                >
-                  + Add new task{" "}
-                </Link>
+                <EmptyTask />
               </div>
             ) : (
               tasks.map((task, index) => (
