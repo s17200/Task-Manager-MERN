@@ -36,7 +36,7 @@ const Home = () => {
     <>
       <MainLayout>
         {!isLoggedIn ? (
-          <div className="bg-primary text-white h-[40vh] py-8 text-center">
+          <div className="bg-saurabh-blue text-white h-[40vh] py-8 text-center">
             <h1 className="text-2xl"> Welcome to Task Manager App</h1>
             <Link
               to="/signup"
