@@ -46,7 +46,7 @@ exports.getTask = async (req, res) => {
       _id: req.params.taskId,
     });
     if (!task) {
-      return res.status(400).json({ status: false, msg: "No task found.." });
+      return res.status(400).json({ status: false, msg: "You can't update task of another user" });
     }
     res
       .status(200)
@@ -87,11 +87,29 @@ exports.postTask = async (req, res) => {
 
 exports.putTask = async (req, res) => {
   try {
-    const { description } = req.body;
+    const { description, priority, assignedTo, deadline } = req.body;
     if (!description) {
       return res
         .status(400)
-        .json({ status: false, msg: "Description of task not found" });
+        .json({ status: false, msg: "Please Fill all the Fields!" });
+    }
+
+    if (!priority) {
+      return res
+        .status(400)
+        .json({ status: false, msg: "Please Fill all the Fields!" });
+    }
+
+    if (!assignedTo) {
+      return res
+        .status(400)
+        .json({ status: false, msg: "Please Fill all the Fields!" });
+    }
+
+    if (!deadline) {
+      return res
+        .status(400)
+        .json({ status: false, msg: "Please Fill all the Fields!" });
     }
 
     if (!validateObjectId(req.params.taskId)) {
@@ -113,7 +131,7 @@ exports.putTask = async (req, res) => {
 
     task = await Task.findByIdAndUpdate(
       req.params.taskId,
-      { description },
+      { description, priority, assignedTo, deadline },
       { new: true }
     );
     res

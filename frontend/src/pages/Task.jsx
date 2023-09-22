@@ -41,6 +41,21 @@ const Task = () => {
     });
   }, []);
 
+  // useEffect(() => {
+  //   if (mode === "update") {
+  //     const config = {
+  //       url: `/tasks/${taskId}`,
+  //       method: "get",
+  //       headers: { Authorization: authState.token },
+  //     };
+  //     fetchData(config, { showSuccessToast: false }).then((data) => {
+  //       setTask(data.task);
+  //       setFormData({ description: data.task.description });
+      
+  //     });
+  //   }
+  // }, [mode, authState, taskId, fetchData]);
+
   useEffect(() => {
     if (mode === "update") {
       const config = {
@@ -48,14 +63,19 @@ const Task = () => {
         method: "get",
         headers: { Authorization: authState.token },
       };
-      fetchData(config, { showSuccessToast: false }).then((data) => {
-        setTask(data.task);
-   
-   
-        setFormData({ description: data.task.description });
-      });
+      fetchData(config, { showSuccessToast: false })
+        .then((data) => {
+          setTask(data.task);
+          setFormData({ description: data.task.description });
+        })
+        .catch((error) => {
+          navigate("/")
+        });
     }
   }, [mode, authState, taskId, fetchData]);
+  
+
+   
 
   const handleChange = (e) => {
     setFormData({
@@ -117,6 +137,7 @@ const Task = () => {
     </p>
   );
   // max-w-[1000px]
+
   return (
     <>                      
       <MainLayout>
@@ -144,6 +165,7 @@ const Task = () => {
                     className="py-3 outline-2 border-2"
                     onChange={handleChange}
                     name="assignedTo"
+              
                   >
                     <option value="">Select Name</option>
                     {assignTo.map((item) => (
