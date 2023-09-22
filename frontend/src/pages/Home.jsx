@@ -56,7 +56,7 @@ const Home = () => {
               Welcome {authState.user.name}
             </h1>
             <select
-              className=" mt-8 mx-8 rounded-md p-2"
+              className=" mt-8 mx-8 rounded-md p-2 cursor-pointer "
               name="Filter"
               id="filter"
               onChange={(e) => setFilter(e.target.value)}
