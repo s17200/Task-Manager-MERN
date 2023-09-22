@@ -9,11 +9,11 @@ import validateManyFields from '../validations';
 
 const Task = () => {
 
-  const authState = useSelector(state => state.authReducer);
+  const authState = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const [fetchData, { loading }] = useFetch();
   const { taskId } = useParams();
-  const [assignedBy, setAssignedBy] = useState([]);
+
 
   const mode = taskId === undefined ? "add" : "update";
   const [task, setTask] = useState(null);
@@ -141,7 +141,7 @@ const Task = () => {
                 <div className="flex flex-col gap-2 mt-4">
                   <label htmlFor="Assignedto">AssignedTo</label>
                   <select
-                    className="py-3 outline-2 border-2" 
+                    className="py-3 outline-2 border-2"
                     onChange={handleChange}
                     name="assignedTo"
                   >
@@ -160,7 +160,7 @@ const Task = () => {
                     onChange={handleChange}
                     name="priority"
                   >
-                    <option >Select Priority</option>
+                    <option value="">Select Priority</option>
                     <option value="Low">Low</option>
                     <option value="Medium">Medium</option>
                     <option value="High">High</option>

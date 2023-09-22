@@ -17,7 +17,7 @@ const Login = () => {
         <LoginForm redirectUrl={redirectUrl} />
       </MainLayout>
     </>
-  )
+  );
 }
 
 export default Login
