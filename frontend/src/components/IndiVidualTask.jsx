@@ -120,6 +120,7 @@ function IndiVidualTask({ task, index, assignedBy, assignedTo, deleteTask }) {
         </Tooltip>
 
         <Tooltip text={"Mark as Completed"} position={"top"}>
+          {/* <Link to={`/tasks/${}`}></Link> */}
           <span
             className="text-blue-500 cursor-pointer ml-2"
             onClick={() => handleCompleted(task?._id)}
