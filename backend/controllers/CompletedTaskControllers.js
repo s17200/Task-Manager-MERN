@@ -6,13 +6,12 @@ exports.markTaskAsCompleted = async (req, res) => {
   try {
     const { taskId } = req.body;
     const task = await Task.findOne({ _id: taskId });
-    const { description } = task;
 
     // Create a completed task entry for the logged-in user.
     const completedTask = new CompletedTask({
       taskId,
       userId: req.user._id,
-      description,
+      task,
     });
 
     // Save the completed task.
@@ -33,7 +32,7 @@ exports.getCompletedTasks = async (req, res) => {
     // Find all completed tasks for the logged-in user.
     const completedTasks = await CompletedTask.find({
       userId: req.user._id,
-    }).populate("_id", "description");
+    });
 
     res.status(200).json(completedTasks);
   } catch (error) {

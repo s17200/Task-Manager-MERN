@@ -41,7 +41,7 @@ function App() {
             }
           />
           <Route
-            path="/tasks/completed/:id"
+            path="/tasks/completed"
             element={
               authState.isLoggedIn ? (
                 <CompletedTasks />

@@ -2,8 +2,9 @@ const CompletedTask = require("../models/CompletedTask");
 const Task = require("../models/Task");
 const { validateObjectId } = require("../utils/validation");
 
+
 exports.getTasks = async (req, res) => {
-  const { priority = "default", assignedBy } = req.query;
+  const { priority, assignedBy } = req.query;
   let query = {
     // Exclude tasks that are in the completed task list of the logged-in user.
     _id: {
@@ -12,10 +13,16 @@ exports.getTasks = async (req, res) => {
       ),
     },
   };
-  if (priority !== "default") {
-    query.priority = priority;
-  }
 
+  // if (priority !== "default") {
+  //   query.priority = priority;
+  // }
+
+  if (priority) {
+    // If priorities are provided, split them into an array
+    const priorityArray = Array.isArray(priority) ? priority : [priority];
+    query.priority = { $in: priorityArray };
+  }
   if (assignedBy) {
     query.assignedBy = assignedBy;
   }
@@ -34,6 +41,7 @@ exports.getTasks = async (req, res) => {
       res.status(200).json(tasks);
     });
 };
+
 
 exports.getTask = async (req, res) => {
   try {

@@ -1,61 +1,39 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Tooltip from "./utils/Tooltip";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import useFetch from "../hooks/useFetch";
+import { useSelector } from "react-redux";
+import { handleDateFormate } from "./utils/formateDate";
+import { getColorByPriority } from "./utils/colorbypriority";
 
-function IndiVidualTask({ task, index, assignedBy, assignedTo, deleteTask }) {
-  const handleDateFormate = (date) => {
-    const inputDate = new Date(date);
+function IndiVidualTask({
+  task,
+  index,
+  assignedBy,
+  assignedTo,
+  deleteTask,
+  fetchTasks,
+  filter,
+}) {
+  const authState = useSelector((state) => state.auth);
+  const [fetchData, { loading }] = useFetch();
 
-    const monthNames = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sept",
-      "Oct",
-      "Nov",
-      "Dec",
-    ];
-    const year = inputDate.getFullYear();
-
-    const monthIndex = inputDate.getMonth();
-    const day = inputDate.getDate();
-
-    const monthName = monthNames[monthIndex];
-
-    const formattedDate = `${day} - ${monthName} - ${year}`;
-    return formattedDate;
-  };
-  const getColorByPriority = (priority) => {
-    switch (priority) {
-      case "Low":
-        return "bg-green-500";
-      case "Medium":
-        return "bg-yellow-400";
-      case "High":
-        return "bg-red-500";
-      default:
-        return "bg-gray-500";
-    }
-  };
   const handleDelete = (id) => {
     deleteTask(id);
   };
 
   const handleCompleted = (id) => {
-    // const config = {
-    //   url: `/tasks?priority=${Filter}`,
-    //   method: "get",
-    //   headers: { Authorization: authState.token },
-    // };
-    // fetchData(config, { showSuccessToast: false }).then((data) => {
-    //   setTasks(data);
-    // });
+    const config = {
+      url: `/completed/tasks`,
+      method: "post",
+      data: { taskId: id },
+      headers: { Authorization: authState.token },
+    };
+    fetchData(config, { showSuccessToast: false }).then((data) => {
+      fetchTasks();
+    });
   };
+
   return (
     <div
       key={task._id}
@@ -120,7 +98,6 @@ function IndiVidualTask({ task, index, assignedBy, assignedTo, deleteTask }) {
         </Tooltip>
 
         <Tooltip text={"Mark as Completed"} position={"top"}>
-          {/* <Link to={`/tasks/${}`}></Link> */}
           <span
             className="text-blue-500 cursor-pointer ml-2"
             onClick={() => handleCompleted(task?._id)}

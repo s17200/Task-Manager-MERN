@@ -7,93 +7,61 @@ import Tooltip from './utils/Tooltip';
 import NoofTasks from "./NoofTasks";
 import IndiVidualTask from "./IndiVidualTask";
 import EmptyTask from "./EmptyTask";
+import useFetchUserDataForAssignedUsers from "../hooks/useFetchUserDataForAssignedUsers";
+import axios from "axios";
 
-const Tasks = ({ Filter }) => {
+const Tasks = ({ priorityParams }) => {
+  console.log(priorityParams);
   const authState = useSelector((state) => state.auth);
   const [tasks, setTasks] = useState([]);
   const [fetchData, { loading }] = useFetch();
-  const [assignedBy, setAssignedBy] = useState({});
-  const [assignedTo, setAssignedTo] = useState({});
+  const { assignedBy, assignedTo, isLoading } =
+    useFetchUserDataForAssignedUsers(tasks, authState);
 
   const fetchTasks = useCallback(() => {
     const config = {
-      url: `/tasks?priority=${Filter}`,
+      url: `/tasks`,
       method: "get",
+      params: {
+        priority: priorities.join(","),
+      },
       headers: { Authorization: authState.token },
     };
 
     fetchData(config, { showSuccessToast: false }).then((data) => {
       setTasks(data);
     });
-  }, [authState.token, fetchData, Filter]);
+  }, [authState.token, fetchData]);
 
   useEffect(() => {
     if (!authState.isLoggedIn) return;
     fetchTasks();
-  }, [authState.isLoggedIn, fetchTasks, Filter]);
+  }, [authState.isLoggedIn, fetchTasks]);
 
   const deleteTask = (id) => {
     const config = {
       url: `/tasks/${id}`,
       method: "delete",
+
       headers: { Authorization: authState.token },
     };
     fetchData(config).then(() => fetchTasks());
   };
 
   useEffect(() => {
-    // Function to fetch user data for a given user ID
-    const getUsersData = async (id) => {
-      const config = {
-        url: `/users/${id}`,
-        method: "get",
-        headers: { Authorization: authState.token },
-      };
-      try {
-        const data = await fetchData(config, { showSuccessToast: false });
-        return data.user.name;
-      } catch (error) {
-        console.log(error);
-        return null;
-      }
-    };
-
-    // Fetch user data for assigned users
-    const fetchUserDataForAssignedUsers = async () => {
-      const newAssignedBy = {};
-      const newAssignedTo = {}; // Create a new map to store user data
-
-      // Iterate through tasks to collect unique user IDs
-      const uniqueAssignedByIds = Array.from(
-        new Set(tasks.map((task) => task.assignedBy._id))
-      );
-      const uniqueAssignedToIds = Array.from(
-        new Set(tasks.map((task) => task.assignedTo._id))
-      );
-
-      // Fetch user data for each unique user ID
-      for (const userId of uniqueAssignedByIds) {
-        const userName = await getUsersData(userId);
-        if (userName !== null) {
-          newAssignedBy[userId] = userName;
-        }
-      }
-
-      for (const userId of uniqueAssignedToIds) {
-        const userName = await getUsersData(userId);
-        if (userName !== null) {
-          newAssignedTo[userId] = userName;
-        }
-      }
-
-      // Update the userDataMap state with the fetched user data
-      setAssignedBy(newAssignedBy);
-      setAssignedTo(newAssignedTo);
-    };
-
-    // Call the function to fetch user data when tasks or authState.token changes
-    fetchUserDataForAssignedUsers();
-  }, [tasks, authState.token]);
+    axios
+      .get("/api/tasks", {
+        params: {
+          priority: priorities.join(","),
+        },
+      })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.error("Error fetching tasks: ", error);
+      });
+  }, [priorities]);
 
   return (
     <>
@@ -115,6 +83,8 @@ const Tasks = ({ Filter }) => {
                   assignedBy={assignedBy}
                   assignedTo={assignedTo}
                   deleteTask={deleteTask}
+                  // filter={Filter}
+                  fetchTasks={fetchTasks}
                 />
               ))
             )}
